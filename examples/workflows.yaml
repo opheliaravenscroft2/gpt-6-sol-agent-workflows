@@ -1,9 +1,16 @@
-workflows:
+version: 1
+model: argolink/gpt-6-sol
+variants:
   refactor:
-    model: gpt-6-sol
-    effort: high
+    variant: high
     steps: [inspect, plan, patch, test, review]
   review:
-    model: gpt-6-sol
-    effort: medium
+    variant: medium
     steps: [read-diff, risks, comments]
+  test-authoring:
+    variant: high
+    steps: [inspect, propose-cases, write-tests, run-tests, review]
+execution:
+  max_iterations: 3
+  write_requires_clean_branch: true
+  stop_on_auth_or_unknown_model: true
