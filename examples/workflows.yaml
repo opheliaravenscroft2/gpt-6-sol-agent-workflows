@@ -1,0 +1,9 @@
+workflows:
+  refactor:
+    model: gpt-6-sol
+    effort: high
+    steps: [inspect, plan, patch, test, review]
+  review:
+    model: gpt-6-sol
+    effort: medium
+    steps: [read-diff, risks, comments]

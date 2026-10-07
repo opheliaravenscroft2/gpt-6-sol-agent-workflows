@@ -1,0 +1,1 @@
+{"$schema":"https://opencode.ai/config.json","provider":{"argolink":{"npm":"@ai-sdk/openai-compatible","name":"ArgoLink","options":{"baseURL":"https://argolink.io/v1","apiKey":"{env:OPENAI_API_KEY}"},"models":{"gpt-6-sol":{"name":"GPT-6 Sol","reasoning":true,"cost":{"input":0.6,"output":3.0}}}}},"model":"argolink/gpt-6-sol"}

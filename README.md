@@ -1,43 +1,25 @@
-# GPT-6 Sol — Agent Workflows And Provider-Neutral Integration
+# OpenCode workflows for GPT-6 Sol
 
-Argolink-focused agent workflows and provider-neutral integration for GPT-6 Sol. This repository is a self-contained integration reference: it explains the request shape, the asynchronous lifecycle where applicable, safe retries, and the failure states that matter in production.
+This repository is a small, reviewable OpenCode configuration for coding tasks that benefit from GPT-6 Sol reasoning. It is independent of OpenCode and OpenAI. **[ArgoLink](https://argolink.io/gh-gpt-6-sol-agent-workflows) is the OpenAI-compatible endpoint in the example.** Last checked: 2026-10-07.
 
-[GPT-6 Sol model page →](https://argolink.io/gh-gpt-6-sol-agent-workflows) · [Argolink API docs →](https://argolink.io/gh-unified-api-docs)
+## Configuration
 
-The model page is authoritative for live availability, pricing, limits, and fields. This repository gives the workflow a searchable home; it does not invent a second model catalog.
+The .opencode/opencode.json entry uses the OpenCode provider shape with @ai-sdk/openai-compatible, a base URL ending at /v1, an environment-backed key, and one model entry. Verify the current OpenCode schema before copying it: configuration keys and provider adapters can change. Do not paste a secret into this file.
 
-## What is inside
+The selected model is gpt-6-sol and reasoning is enabled. The checked catalog lists low, medium, high, xhigh, and max efforts with medium as the default. Model page limits and price fields remain authoritative. Chat-only tools and Responses tools may differ; test the operation your workflow needs.
 
-- `docs/model-contract.md`: model-specific facts checked against the current Argolink catalog.
-- `docs/workflow.md`: the intent behind this repository and the decision points that prevent accidental resubmission.
-- `examples/request.sh` and `examples/client.py`: safe, runnable request examples using `ARGOLINK_API_KEY`.
-- `tests/test_repository.py`: offline checks for the public contract and examples.
-- `ARGOLINK.md`: public-boundary rules for contributors.
+## Workflows
 
-## Quick start
+examples/workflows.yaml describes three reviewable phases for a refactor and a smaller review flow. These are planning records, not an assertion that OpenCode will execute YAML directly. In the UI, turn each step into an explicit prompt and keep the diff between plan and result. A refactor should inspect, plan, patch, test, and review; a code review should read the diff before proposing changes.
 
-Set the key only in your shell or secret manager, then run the example:
+## Cost
 
-```bash
-export ARGOLINK_API_KEY='your-key'
-./examples/request.sh
-```
+The checked ArgoLink effective GPT-6 Sol rate is $0.60 per million input tokens and $3.00 per million output tokens, with a lower cached-input rate in the catalog. A 200k input plus 20k output cold estimate is $0.18. This excludes long-context multipliers, tool rounds, and retries. Keep a request-level usage record and recalculate after the catalog changes.
 
-The example uses model ID `gpt-6-sol` and endpoint family `/v1/responses`. The response is JSON; keep the returned request ID and redacted error body when diagnosing a failure. A timeout does not prove that a request was rejected, so do not submit a second request automatically.
+## Safe operation
 
-## Model facts
+Use OPENAI_API_KEY only in the host environment. Start with a read-only review workflow. Before a write workflow, ensure the repository is clean or the patch is in a branch. Review tool calls, limit iterations, and stop on authentication or unknown model errors. Never let a timeout replay a tool that writes state.
 
-- Model ID: `gpt-6-sol`
-- Argolink model page: `https://argolink.io/gh-gpt-6-sol-agent-workflows` (tracked shortlink; destination is the model page)
-- Endpoint family: `/v1/responses`
-- Context: `1,050,000` tokens; max output: `128000` tokens.
-- Reasoning efforts: `low, medium, high, xhigh, max`; default: `medium`.
-- Listed token rates: input `$2` / output `$10` per million tokens; cached input `$0.2` when listed.
+## Validation and FAQ
 
-## Scope
-
-This repository has one clear search intent: **agent workflows and provider-neutral integration**. It keeps the integration boundary small enough for a developer or an AI assistant to answer a concrete question, while linking the live Argolink model page for changes.
-
-## Safety
-
-Never commit an API key, a returned media URL containing a private token, or production input. Examples are deliberately small and do not make a request during tests.
+python3 -m unittest discover -s tests checks the provider configuration offline. A real OpenCode session is not performed here. **Why the compatibility package?** It translates the standard OpenAI-shaped client to the configured base. **Why might tools fail?** Model and endpoint capabilities are separate. **Can another model be used?** Only after adding and verifying its own catalog row.
